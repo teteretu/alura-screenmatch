@@ -13,20 +13,18 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class Principal {
-    private Scanner leitura = new Scanner(System.in);
-    private ConsumoApi consumo = new ConsumoApi();
-    private ConverteDados conversor = new ConverteDados();
-
-    private final String ENDERECO = "https://www.omdbapi.com/?t=";
-    private final String API_KEY = "&apikey=6585022c";
+    private final Scanner leitura = new Scanner(System.in);
+    private final ConsumoApi consumo = new ConsumoApi();
+    private final ConverteDados conversor = new ConverteDados();
 
     public void exibeMenu() {
         System.out.println("Digite o nome da série para a busca");
         var nomeSerie = leitura.nextLine();
         // Exemplo de api: "https://www.omdbapi.com/?t=gilmore+girls&apikey=6585022c"
+        String ENDERECO = "https://www.omdbapi.com/?t=";
+        String API_KEY = "&apikey=6585022c";
         var json = consumo.obterDados(ENDERECO + nomeSerie.replace(" ", "+") + API_KEY);
         DadosSerie dados = conversor.obterDados(json, DadosSerie.class);
         System.out.println(dados);
@@ -43,8 +41,7 @@ public class Principal {
         temporadas.forEach(System.out::println);
 
         List<DadosEpisodio> dadosEpisodios = temporadas.stream()
-                .flatMap(t -> t.episodios().stream())
-                .collect(Collectors.toList());
+                .flatMap(t -> t.episodios().stream()).toList();
 
         System.out.println("\n Top 5 episódios");
         dadosEpisodios.stream()
@@ -56,7 +53,7 @@ public class Principal {
         List<Episodio> episodios = temporadas.stream()
                 .flatMap(t -> t.episodios().stream()
                         .map(d -> new Episodio(t.numero(), d))
-                ).collect(Collectors.toList());
+                ).toList();
 
         episodios.forEach(System.out::println);
 
